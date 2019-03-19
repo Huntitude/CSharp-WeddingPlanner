@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "Wedding Planner";
+}
+@model List<WeddingPlan>
+
+<div class="Dnavheader">
+    <h3 class="navheaderh1">Welcome to Wedding Planner, @ViewBag.CurrentUser.FirstName.(@ViewBag.CurrentUser.UserId) <small></small> </h2>
+    <a class="float-right" href="http://127.0.0.1:5000/logout">Logout</a>
+</div>
+
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Wedding</th>
+      <th scope="col">Date</th>
+      <th scope="col">Guests</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (Model.Count == 0)
+        {
+            <tr>
+                <td colspan="4">No upcoming weddings to display. Be the first and add your wedding!</td>
+            </tr>
+        }
+    @foreach(WeddingPlan plan in Model)
+    {
+        <tr>
+            <td><a href="/details/@plan.PlanId">@plan.WedderOne & @plan.WedderTwo</a></td>
+            <td>@plan.WeddingDate</td>
+            <td>@plan.Guests.Count</td>
+            <td>
+            @if(@ViewBag.CurrentUser.UserId == @plan.CreatorId)
+            {
+                <a  href="/delete/@plan.PlanId">Delete</a> 
+            }
+                @{
+                    var count = 0;
+                    foreach (var guest in @plan.Guests)
+                    {
+                        if (@ViewBag.UserId == guest.UserId)
+                        {
+                            count++;
+                        }
+                    }
+                    if (@plan.Guests.Count == 0)
+                    {
+                        <a href="/RSVP/@plan.PlanId">RSVP/UNRSVP</a>
+                    }
+                    else
+                    {
+                        <a  href="/RSVP/@plan.PlanId">RSVP/UNRSVP</a>
+                    }
+                }
+            </td>
+        </tr>
+    }
+
+  </tbody>
+</table>
+
+<a class="btn btn-primary" href="new-wedding" role="button">Create Wedding</a>
+
